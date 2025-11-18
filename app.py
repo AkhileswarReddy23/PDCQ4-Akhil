@@ -59,5 +59,66 @@ def logout():
     session.pop('user', None)
     return redirect(url_for('index'))
 
+def generate_design_pattern(n):
+    """
+    Generate a recursive design pattern based on the number of lines.
+    Pattern: recursively breaks down the word "FORMULATIONS" by showing
+    the word, then a connector line, then continuing recursively with the middle.
+    """
+    word = "FORMULAQSOLUTIONS"
+    lines = []
+    
+    def recursive_pattern(text):
+        """Recursively generate the pattern"""
+        if len(lines) >= n or not text:
+            return
+        
+        # Base case: single character
+        if len(text) == 1:
+            lines.append(text)
+            return
+        
+        # Show the text
+        lines.append(text)
+        if len(lines) >= n:
+            return
+        
+        # Show connector between first and last character
+        first = text[0]
+        last = text[-1]
+        middle_length = len(text) - 2
+        
+        if middle_length >= 0:
+            if middle_length == 0:
+                connector = first + last
+            else:
+                connector = first + "-" * middle_length + last
+            lines.append(connector)
+            if len(lines) >= n:
+                return
+            
+            # Extract middle and recurse
+            middle = text[1:-1]
+            if middle:
+                recursive_pattern(middle)
+    
+    recursive_pattern(word)
+    return '\n'.join(lines[:n])
+
+@app.route('/generate-design', methods=['POST'])
+def generate_design():
+    try:
+        data = request.get_json()
+        lines = data.get('lines', 0)
+        
+        # Validate input
+        if not isinstance(lines, int) or lines < 1 or lines > 100:
+            return {'error': 'Invalid input. Lines must be between 1 and 100'}, 400
+        
+        design = generate_design_pattern(lines)
+        return {'design': design}
+    except Exception as e:
+        return {'error': str(e)}, 500
+
 if __name__ == '__main__':
     app.run(debug=True)

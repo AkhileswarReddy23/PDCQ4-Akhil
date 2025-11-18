@@ -13,11 +13,105 @@
         h1 {
             color: #333;
         }
+        .design-container {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .input-group {
+            margin: 20px 0;
+        }
+        input[type="number"] {
+            padding: 8px;
+            font-size: 14px;
+            width: 200px;
+        }
+        button {
+            padding: 8px 16px;
+            font-size: 14px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #design-output {
+            background-color: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            overflow-x: auto;
+            display: none;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <h1>Hello {{ name }} [<a href="/logout">Sign out</a>]</h1>
     <p>You are signed in with the email: <strong>{{ email }}</strong></p>
     <p>Current Indian Time: <strong>{{ current_time }}</strong></p>
+    
+    <div class="design-container">
+        <h2>Printing Design</h2>
+        <div class="input-group">
+            <label for="lines-input">Number of Lines:</label>
+            <input type="number" id="lines-input" name="lines" min="1" max="100" placeholder="Enter number (1-100)">
+            <button onclick="generateDesign()">Display</button>
+        </div>
+        <div id="error" class="error"></div>
+        <div id="design-output"></div>
+    </div>
+
+    <script>
+        async function generateDesign() {
+            const linesInput = document.getElementById('lines-input');
+            const lines = parseInt(linesInput.value);
+            const errorDiv = document.getElementById('error');
+            const outputDiv = document.getElementById('design-output');
+            
+            errorDiv.style.display = 'none';
+            outputDiv.style.display = 'none';
+            
+            if (!lines || lines < 1 || lines > 100) {
+                errorDiv.textContent = 'Please enter a valid number between 1 and 100';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/generate-design', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ lines: lines })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to generate design');
+                }
+                
+                const data = await response.json();
+                outputDiv.textContent = data.design;
+                outputDiv.style.display = 'block';
+            } catch (error) {
+                errorDiv.textContent = 'Error: ' + error.message;
+                errorDiv.style.display = 'block';
+            }
+        }
+    </script>
 </body>
 </html>
