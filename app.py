@@ -5,8 +5,8 @@ import pytz
 
 app = Flask(__name__)
 app.secret_key = 'abcdefgh123456'
-app.config['GOOGLE_CLIENT_ID'] = '716598335852-0ahk2u4ret2sbr8017teegf60v0tn2m0.apps.googleusercontent.com'
-app.config['GOOGLE_CLIENT_SECRET'] = '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'
+app.config['GOOGLE_CLIENT_ID'] = '947889916267-u0n6suktbfv3h3277bgteus4lb8dt33f.apps.googleusercontent.com'
+app.config['GOOGLE_CLIENT_SECRET'] = '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'
 app.config['GOOGLE_DISCOVERY_URL'] = 'https://accounts.google.com/.well-known/openid-configuration'
 
 oauth = OAuth(app)
