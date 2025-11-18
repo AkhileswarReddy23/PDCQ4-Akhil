@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hello {{ name }} [<a href="/logout">Sign out</a>]</h1>
+    <p>You are signed in with the email: <strong>{{ email }}</strong></p>
+    <p>Current Indian Time: <strong>{{ current_time }}</strong></p>
+</body>
+</html>
