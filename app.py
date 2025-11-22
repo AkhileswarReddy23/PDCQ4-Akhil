@@ -59,51 +59,61 @@ def logout():
     session.pop('user', None)
     return redirect(url_for('index'))
 
+
+
 def generate_design_pattern(n):
     """
     Generate a recursive design pattern based on the number of lines.
-    Pattern: recursively breaks down the word "FORMULATIONS" by showing
-    the word, then a connector line, then continuing recursively with the middle.
+    Pattern: uses the word "FORMULAQSOLUTIONS" with cyclic indexing
+    to create a centered diamond-like structure.
     """
-    word = "FORMULAQSOLUTIONS"
+    S = "FORMULAQSOLUTIONS"
+    L = len(S)
+    mid = n // 2
+    
     lines = []
-    
-    def recursive_pattern(text):
-        """Recursively generate the pattern"""
-        if len(lines) >= n or not text:
-            return
-        
-        # Base case: single character
-        if len(text) == 1:
-            lines.append(text)
-            return
-        
-        # Show the text
-        lines.append(text)
-        if len(lines) >= n:
-            return
-        
-        # Show connector between first and last character
-        first = text[0]
-        last = text[-1]
-        middle_length = len(text) - 2
-        
-        if middle_length >= 0:
-            if middle_length == 0:
-                connector = first + last
+
+    if n % 2 == 0:
+        rng = range(1, n + 2)
+        a = n + 1
+    else:
+        rng = range(1, n + 1)
+        a = n
+
+    for line in rng:
+        if line <= mid:
+            start = line - 1
+            if line % 2 == 1:
+                length = 2 * line - 1
+                out = "".join(S[(start + k) % L] for k in range(length))
             else:
-                connector = first + "-" * middle_length + last
-            lines.append(connector)
-            if len(lines) >= n:
-                return
-            
-            # Extract middle and recurse
-            middle = text[1:-1]
-            if middle:
-                recursive_pattern(middle)
-    
-    recursive_pattern(word)
-    return '\n'.join(lines[:n])
+                diff = 2 * line - 2
+                end = (start + diff) % L
+                underscores = diff - 1
+                out = S[start % L] + ("-" * underscores) + S[end % L]
+
+        elif line == mid + 1:
+            start = mid
+            out = "".join(S[(start + k) % L] for k in range(a))
+
+        else:
+            t = line - mid
+            start = line - 1
+
+            if t % 2 == 0:
+                diff = 2 * (mid - t + 1)
+                end = (start + diff) % L
+                underscores = diff - 1
+                out = S[start % L] + ("-" * underscores) + S[end % L]
+            else:
+                length = 2 * (mid - t) + 3
+                out = "".join(S[(start + k) % L] for k in range(length))
+
+        lines.append(out.center(30))
+
+    return '\n'.join(lines)
+
+
 
 @app.route('/generate-design', methods=['POST'])
 def generate_design():
